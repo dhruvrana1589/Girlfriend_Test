@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For J — Always</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 88.5C50 88.5 15.5 61.5 15.5 35.5C15.5 20.5 27.5 10 40 10C48 10 50 15 50 15C50 15 52 10 60 10C72.5 10 84.5 20.5 84.5 35.5C84.5 61.5 50 88.5 50 88.5Z' fill='%23c9687a'/%3E%3C/svg%3E" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,7 +44,7 @@
     z-index: 9999;
     text-align: center;
     padding: 2rem;
-    transition: opacity 1s ease;
+    transition: opacity 1.5s ease;
   }
 
   .lock-title {
@@ -90,6 +91,45 @@
     margin-top: 0.5rem;
   }
 
+  /* ── ANNIVERSARY SPLASH SCREEN ── */
+  #anniversary-splash {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9997; 
+    opacity: 0;
+    transition: opacity 2s ease;
+    pointer-events: none;
+  }
+
+  .anniversary-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 14vw, 8rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--rose-dark);
+    text-align: center;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 10px rgba(201, 104, 122, 0.4);
+    transform: translateY(20px);
+    animation: floatUp 3s ease-out forwards;
+  }
+  
+  .anniversary-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    margin-top: 2rem;
+    opacity: 0;
+    animation: fadeInSub 2s ease 1.5s forwards;
+  }
+
   /* ── CANVASES ── */
   #petal-canvas {
     position: fixed;
@@ -110,7 +150,9 @@
 
   /* MAIN CONTENT WRAPPER */
   #main-content {
+    opacity: 0;
     display: none;
+    transition: opacity 2s ease;
   }
 
   /* ── HERO ── */
@@ -493,6 +535,16 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  @keyframes floatUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fadeInSub {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
   @keyframes scrollPulse {
     0%, 100% { opacity: 0.3; }
     50%       { opacity: 1; }
@@ -535,6 +587,12 @@
       <span class="time-label">Secs</span>
     </div>
   </div>
+</div>
+
+<!-- ANNIVERSARY SPLASH (Plays right after lock screen) -->
+<div id="anniversary-splash">
+  <h1 class="anniversary-text">Happy Anniversary</h1>
+  <p class="anniversary-sub">My beautiful Janvi</p>
 </div>
 
 <!-- MAIN CONTENT (HIDDEN BY DEFAULT) -->
@@ -642,18 +700,10 @@
 </div>
 
 <script>
-  /* ── TIME LOCK LOGIC & FIREWORK TRIGGER ── */
+  /* ── TIME LOCK LOGIC & REVEAL SEQUENCE ── */
   
-  // ==========================================
-  // 🔴 CHANGE THIS LINE BEFORE SENDING TO HER!
-  // ==========================================
-  // Currently set to: EXACTLY 5 SECONDS FROM NOW (for testing)
-  const countDownDate = new Date().getTime() + 5000; 
-  
-  // TO MAKE IT WORK FOR MAY 17, REMOVE THE LINE ABOVE AND UNCOMMENT THE LINE BELOW:
-  // const countDownDate = new Date("May 17, 2026 00:00:00").getTime();
-  // ==========================================
-
+  // Bulletproof Timezone Lock (Midnight IST exactly)
+  const countDownDate = new Date("2026-05-17T00:00:00+05:30").getTime();
 
   let isUnlocked = false;
 
@@ -664,12 +714,34 @@
     if (distance < 0) {
       if (!isUnlocked) {
         isUnlocked = true;
+        
+        // Fade out Lock Screen
         document.getElementById("lock-screen").style.opacity = "0";
+        
         setTimeout(() => {
           document.getElementById("lock-screen").style.display = "none";
-          document.getElementById("main-content").style.display = "block";
+          
           startFireworks(); 
-        }, 1000); 
+          
+          const splash = document.getElementById("anniversary-splash");
+          splash.style.opacity = "1";
+          
+          setTimeout(() => {
+            splash.style.opacity = "0";
+            
+            setTimeout(() => {
+              splash.style.display = "none";
+              const mainContent = document.getElementById("main-content");
+              mainContent.style.display = "block";
+              
+              setTimeout(() => {
+                mainContent.style.opacity = "1";
+              }, 100);
+            }, 2000); 
+            
+          }, 4500); 
+          
+        }, 1500); 
       }
       return true; 
     } else {
@@ -687,13 +759,24 @@
     }
   }
 
+  // Standard Timer
+  let timerInterval;
   if (!updateLock()) {
-    const timerInterval = setInterval(function() {
+    timerInterval = setInterval(function() {
       if (updateLock()) {
         clearInterval(timerInterval);
       }
     }, 1000);
   }
+
+  // Background Tab Safety Net
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === 'visible' && !isUnlocked) {
+      if (updateLock()) {
+        clearInterval(timerInterval);
+      }
+    }
+  });
 
   /* ── FALLING PETALS (Constant background) ── */
   const petalCanvas = document.getElementById('petal-canvas');
@@ -753,32 +836,37 @@
   }
   requestAnimationFrame(animPetals);
 
-  /* ── FIREWORKS (Triggers on unlock) ── */
+  /* ── OPTIMIZED HEART-SHAPED FIREWORKS ── */
   function startFireworks() {
     const fwCanvas = document.getElementById('fireworks-canvas');
     const fCtx = fwCanvas.getContext('2d');
     let particles = [];
-    let fireworkTimer = 0;
     const colors = ['#c9687a', '#8b3a48', '#c9a96e', '#ffffff']; 
     let showFireworks = true;
 
+    // Fireworks last for 12 seconds
     setTimeout(() => {
       showFireworks = false;
       fwCanvas.style.opacity = '0';
       setTimeout(() => fwCanvas.remove(), 2000);
-    }, 15000);
+    }, 12000);
 
     class Particle {
-      constructor(x, y, color) {
+      constructor(x, y, color, vx, vy) {
         this.x = x;
         this.y = y;
         this.color = color;
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 5 + 1;
-        this.vx = Math.cos(angle) * speed;
-        this.vy = Math.sin(angle) * speed;
-        this.friction = 0.95;
-        this.gravity = 0.05;
+        if (vx !== undefined && vy !== undefined) {
+          this.vx = vx;
+          this.vy = vy;
+        } else {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 5 + 1;
+          this.vx = Math.cos(angle) * speed;
+          this.vy = Math.sin(angle) * speed;
+        }
+        this.friction = 0.94;
+        this.gravity = 0.03;
         this.alpha = 1;
         this.decay = Math.random() * 0.015 + 0.01;
       }
@@ -801,9 +889,25 @@
       }
     }
 
-    function createExplosion(x, y) {
+    // Optimized heart generation (reduced loops & layers)
+    function createHeartExplosion(x, y) {
       const color = colors[Math.floor(Math.random() * colors.length)];
-      for (let i = 0; i < 60; i++) {
+      for (let layer = 0; layer < 2; layer++) { 
+        const speedScale = 0.12 + (Math.random() * 0.06); 
+        for (let t = 0; t < Math.PI * 2; t += 0.15) { 
+          let hx = 16 * Math.pow(Math.sin(t), 3);
+          let hy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+          let vx = hx * speedScale;
+          let vy = hy * speedScale;
+          particles.push(new Particle(x, y, color, vx, vy));
+        }
+      }
+    }
+
+    // Standard circular explosion
+    function createRandomExplosion(x, y) {
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      for (let i = 0; i < 40; i++) { 
         particles.push(new Particle(x, y, color));
       }
     }
@@ -811,15 +915,23 @@
     function animFireworks() {
       if (!document.getElementById('fireworks-canvas')) return; 
       
+      // Keep clear effect efficient
       fCtx.globalCompositeOperation = 'destination-out';
       fCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
       fCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+      
+      // Use lighter composite for a natural, hardware-accelerated glow
       fCtx.globalCompositeOperation = 'lighter';
 
-      if (showFireworks && Math.random() < 0.05) {
+      if (showFireworks && Math.random() < 0.04) {
         const x = Math.random() * fwCanvas.width;
         const y = Math.random() * (fwCanvas.height * 0.5) + fwCanvas.height * 0.1; 
-        createExplosion(x, y);
+        
+        if (Math.random() > 0.4) {
+          createHeartExplosion(x, y);
+        } else {
+          createRandomExplosion(x, y);
+        }
       }
 
       particles.forEach((p, index) => {
@@ -831,7 +943,11 @@
       requestAnimationFrame(animFireworks);
     }
     
-    createExplosion(fwCanvas.width / 2, fwCanvas.height / 3);
+    // Initial blasts
+    createHeartExplosion(fwCanvas.width / 2, fwCanvas.height / 3);
+    setTimeout(() => createHeartExplosion(fwCanvas.width / 3, fwCanvas.height / 4), 400);
+    setTimeout(() => createHeartExplosion(fwCanvas.width / 1.5, fwCanvas.height / 4), 800);
+    
     animFireworks();
   }
 
