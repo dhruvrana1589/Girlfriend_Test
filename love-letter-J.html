@@ -30,13 +30,87 @@
     overflow-x: hidden;
   }
 
-  /* ── CANVAS & PETALS ── */
+  /* ── TIME LOCK SCREEN ── */
+  #lock-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    text-align: center;
+    padding: 2rem;
+    transition: opacity 1s ease;
+  }
+
+  .lock-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--rose-dark);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .lock-subtitle {
+    color: var(--text-mid);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+  }
+
+  .countdown-container {
+    display: flex;
+    gap: 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .time-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .time-number {
+    font-size: 3rem;
+    color: var(--rose);
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .time-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-top: 0.5rem;
+  }
+
+  /* ── CANVASES ── */
   #petal-canvas {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     pointer-events: none;
     z-index: 0;
+  }
+
+  #fireworks-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: opacity 2s ease;
+  }
+
+  /* MAIN CONTENT WRAPPER */
+  #main-content {
+    display: none;
   }
 
   /* ── HERO ── */
@@ -431,136 +505,216 @@
     42%       { transform: scale(1.2); }
     70%       { transform: scale(1); }
   }
-
-  @keyframes petalFall {
-    0%   { transform: translateY(-10px) rotate(0deg) translateX(0); opacity: 0; }
-    10%  { opacity: 0.7; }
-    90%  { opacity: 0.4; }
-    100% { transform: translateY(110vh) rotate(720deg) translateX(80px); opacity: 0; }
-  }
 </style>
 </head>
 <body>
 
 <canvas id="petal-canvas"></canvas>
+<canvas id="fireworks-canvas"></canvas>
 
-<!-- HERO -->
-<section class="hero">
-  <p class="hero-eyebrow">A letter, written in love</p>
-  <h1 class="hero-title">For <em>Janvi</em></h1>
-  <p class="hero-subtitle">Some feelings are too large for words — but I'll try, for you.</p>
-  <div class="scroll-hint">
-    <span>Read on</span>
-    <div class="scroll-line"></div>
+<!-- LOCK SCREEN -->
+<div id="lock-screen">
+  <div class="heart"></div>
+  <h1 class="lock-title">Patience, my love...</h1>
+  <p class="lock-subtitle">Something special is waiting for you.</p>
+  <div class="countdown-container">
+    <div class="time-box">
+      <span class="time-number" id="days">00</span>
+      <span class="time-label">Days</span>
+    </div>
+    <div class="time-box">
+      <span class="time-number" id="hours">00</span>
+      <span class="time-label">Hours</span>
+    </div>
+    <div class="time-box">
+      <span class="time-number" id="minutes">00</span>
+      <span class="time-label">Mins</span>
+    </div>
+    <div class="time-box">
+      <span class="time-number" id="seconds">00</span>
+      <span class="time-label">Secs</span>
+    </div>
   </div>
-</section>
+</div>
 
-<!-- LETTER -->
-<section class="letter-section">
-  <div class="ornament">— ✦ —</div>
-  <div class="letter-card" id="letter-card">
-    <span class="letter-greeting">My dearest Janudiii,</span>
-    <p class="letter-body">
-      There are moments I catch myself simply watching you  the way you laugh without reservation, the way your eyes carry entire worlds  and I wonder how I ever got so lucky to call you mine. You came into my life and quietly rearranged everything, and somehow it all became better, warmer, more alive.
+<!-- MAIN CONTENT (HIDDEN BY DEFAULT) -->
+<div id="main-content">
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">A letter, written in love</p>
+    <h1 class="hero-title">For <em>Janvi</em></h1>
+    <p class="hero-subtitle">Some feelings are too large for words — but I'll try, for you.</p>
+    <div class="scroll-hint">
+      <span>Read on</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- LETTER -->
+  <section class="letter-section">
+    <div class="ornament">— ✦ —</div>
+    <div class="letter-card" id="letter-card">
+      <span class="letter-greeting">My dearest Janudiii,</span>
+      <p class="letter-body">
+        There are moments I catch myself simply watching you  the way you laugh without reservation, the way your eyes carry entire worlds  and I wonder how I ever got so lucky to call you mine. You came into my life and quietly rearranged everything, and somehow it all became better, warmer, more alive.
+      </p>
+      <p class="letter-body">
+        You are the person I want to tell my smallest joys to. You are the calm I return to after every storm. I love you not just in grand gestures, but in the ten thousand tiny ways that add up to a life in quiet mornings, in inside jokes, in the way everything is just a little more beautiful when you're beside me.
+      </p>
+      <p class="letter-body">
+        I don't know what the future holds, but I know that wherever it goes, I want you in it. Every chapter, every page, every uncertain sentence I want to write it all with you.
+      </p>
+      <div class="letter-signature">
+        Forever yours,<br>
+        <em style="font-size:1.6rem; color:var(--rose);">Dhruv</em>
+      </div>
+    </div>
+  </section>
+
+  <!-- REASONS -->
+  <section class="reasons-section">
+    <div class="ornament">— ✦ —</div>
+    <h2 class="section-heading">Reasons I love you</h2>
+    <p class="section-sub">Just a few of many</p>
+
+    <div class="reasons-grid" id="reasons-grid">
+      <div class="reason-card">
+        <div class="reason-number">01</div>
+        <div class="reason-text">The way your laugh sounds completely unfiltered, like pure happiness.</div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-number">02</div>
+        <div class="reason-text">How you make ordinary moments feel like something worth remembering.</div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-number">03</div>
+        <div class="reason-text">Your kindness the kind that's genuine, not performed.</div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-number">04</div>
+        <div class="reason-text">The way you see the world differently, and teach me to as well.</div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-number">05</div>
+        <div class="reason-text">How safe you make me feel just by being there.</div>
+      </div>
+      <div class="reason-card">
+        <div class="reason-number">06</div>
+        <div class="reason-text">Every little thing about you I'm still discovering.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMORIES -->
+  <section class="memories-section">
+    <div class="ornament">— ✦ —</div>
+    <h2 class="section-heading">Our story</h2>
+    <p class="section-sub">moments I hold close</p>
+    <br>
+    <div class="timeline" id="timeline">
+      <div class="memory-item">
+        <div class="memory-label">The beginning</div>
+        <div class="memory-title">The first time</div>
+        <div class="memory-desc">I still remember the first time I saw you. I didn't know yet how much you'd come to mean to me but something already felt different. Something already felt like home.</div>
+      </div>
+      <div class="memory-item">
+        <div class="memory-label">A favourite</div>
+        <div class="memory-title">Laughing until it hurt</div>
+        <div class="memory-desc">There have been moments with you where I've laughed so hard time stopped. I want a lifetime of those ridiculous, breathless, completely ours.</div>
+      </div>
+      <div class="memory-item">
+        <div class="memory-label">Always</div>
+        <div class="memory-title">The quiet ones</div>
+        <div class="memory-desc">It's not just the big moments. It's the quiet evenings, the comfortable silences, the simple warmth of being near you. Those are the ones I treasure most.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing-section" id="closing">
+    <div class="heart-divider"><div class="heart"></div></div>
+    <br><br>
+    <p class="closing-quote" id="closing-quote">
+      "You are every reason, every hope, and every dream I've ever had."
     </p>
-    <p class="letter-body">
-      You are the person I want to tell my smallest joys to. You are the calm I return to after every storm. I love you not just in grand gestures, but in the ten thousand tiny ways that add up to a life in quiet mornings, in inside jokes, in the way everything is just a little more beautiful when you're beside me.
-    </p>
-    <p class="letter-body">
-      I don't know what the future holds, but I know that wherever it goes, I want you in it. Every chapter, every page, every uncertain sentence I want to write it all with you.
-    </p>
-    <div class="letter-signature">
-      Forever yours,<br>
-      <em style="font-size:1.6rem; color:var(--rose);">Dhruv</em>
-    </div>
-  </div>
-</section>
-
-<!-- REASONS -->
-<section class="reasons-section">
-  <div class="ornament">— ✦ —</div>
-  <h2 class="section-heading">Reasons I love you</h2>
-  <p class="section-sub">Just a few of many</p>
-
-  <div class="reasons-grid" id="reasons-grid">
-    <div class="reason-card">
-      <div class="reason-number">01</div>
-      <div class="reason-text">The way your laugh sounds completely unfiltered, like pure happiness.</div>
-    </div>
-    <div class="reason-card">
-      <div class="reason-number">02</div>
-      <div class="reason-text">How you make ordinary moments feel like something worth remembering.</div>
-    </div>
-    <div class="reason-card">
-      <div class="reason-number">03</div>
-      <div class="reason-text">Your kindness the kind that's genuine, not performed.</div>
-    </div>
-    <div class="reason-card">
-      <div class="reason-number">04</div>
-      <div class="reason-text">The way you see the world differently, and teach me to as well.</div>
-    </div>
-    <div class="reason-card">
-      <div class="reason-number">05</div>
-      <div class="reason-text">How safe you make me feel just by being there.</div>
-    </div>
-    <div class="reason-card">
-      <div class="reason-number">06</div>
-      <div class="reason-text">Every little thing about you I'm still discovering.</div>
-    </div>
-  </div>
-</section>
-
-<!-- MEMORIES -->
-<section class="memories-section">
-  <div class="ornament">— ✦ —</div>
-  <h2 class="section-heading">Our story</h2>
-  <p class="section-sub">moments I hold close</p>
-  <br>
-  <div class="timeline" id="timeline">
-    <div class="memory-item">
-      <div class="memory-label">The beginning</div>
-      <div class="memory-title">The first time</div>
-      <div class="memory-desc">I still remember the first time I saw you. I didn't know yet how much you'd come to mean to me but something already felt different. Something already felt like home.</div>
-    </div>
-    <div class="memory-item">
-      <div class="memory-label">A favourite</div>
-      <div class="memory-title">Laughing until it hurt</div>
-      <div class="memory-desc">There have been moments with you where I've laughed so hard time stopped. I want a lifetime of those ridiculous, breathless, completely ours.</div>
-    </div>
-    <div class="memory-item">
-      <div class="memory-label">Always</div>
-      <div class="memory-title">The quiet ones</div>
-      <div class="memory-desc">It's not just the big moments. It's the quiet evenings, the comfortable silences, the simple warmth of being near you. Those are the ones I treasure most.</div>
-    </div>
-  </div>
-</section>
-
-<!-- CLOSING -->
-<section class="closing-section" id="closing">
-  <div class="heart-divider"><div class="heart"></div></div>
-  <br><br>
-  <p class="closing-quote" id="closing-quote">
-    "You are every reason, every hope, and every dream I've ever had."
-  </p>
-  <div class="closing-name">Janvi</div>
-</section>
+    <div class="closing-name">Janvi</div>
+  </section>
+</div>
 
 <script>
-  /* ── FALLING PETALS ── */
-  const canvas = document.getElementById('petal-canvas');
-  const ctx = canvas.getContext('2d');
+  /* ── TIME LOCK LOGIC & FIREWORK TRIGGER ── */
+  
+  // ==========================================
+  // 🔴 CHANGE THIS LINE BEFORE SENDING TO HER!
+  // ==========================================
+  // Currently set to: EXACTLY 5 SECONDS FROM NOW (for testing)
+  const countDownDate = new Date().getTime() + 5000; 
+  
+  // TO MAKE IT WORK FOR MAY 17, REMOVE THE LINE ABOVE AND UNCOMMENT THE LINE BELOW:
+  // const countDownDate = new Date("May 17, 2026 00:00:00").getTime();
+  // ==========================================
+
+
+  let isUnlocked = false;
+
+  function updateLock() {
+    const now = new Date().getTime();
+    const distance = countDownDate - now;
+
+    if (distance < 0) {
+      if (!isUnlocked) {
+        isUnlocked = true;
+        document.getElementById("lock-screen").style.opacity = "0";
+        setTimeout(() => {
+          document.getElementById("lock-screen").style.display = "none";
+          document.getElementById("main-content").style.display = "block";
+          startFireworks(); 
+        }, 1000); 
+      }
+      return true; 
+    } else {
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerText = days.toString().padStart(2, '0');
+      document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+      document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+      document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+      
+      return false; 
+    }
+  }
+
+  if (!updateLock()) {
+    const timerInterval = setInterval(function() {
+      if (updateLock()) {
+        clearInterval(timerInterval);
+      }
+    }, 1000);
+  }
+
+  /* ── FALLING PETALS (Constant background) ── */
+  const petalCanvas = document.getElementById('petal-canvas');
+  const pCtx = petalCanvas.getContext('2d');
   let petals = [];
 
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+  function resizeCanvases() {
+    petalCanvas.width  = window.innerWidth;
+    petalCanvas.height = window.innerHeight;
+    const fwCanvas = document.getElementById('fireworks-canvas');
+    if (fwCanvas) {
+      fwCanvas.width = window.innerWidth;
+      fwCanvas.height = window.innerHeight;
+    }
   }
-  window.addEventListener('resize', resize);
-  resize();
+  window.addEventListener('resize', resizeCanvases);
+  resizeCanvases();
 
   function createPetal() {
     return {
-      x: Math.random() * canvas.width,
+      x: Math.random() * petalCanvas.width,
       y: -20,
       size: Math.random() * 8 + 5,
       speedY: Math.random() * 0.8 + 0.3,
@@ -573,22 +727,22 @@
   }
 
   function drawPetal(p) {
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rotation);
-    ctx.globalAlpha = p.opacity;
-    ctx.fillStyle = `hsl(${345 + p.hue}, 60%, 75%)`;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    pCtx.save();
+    pCtx.translate(p.x, p.y);
+    pCtx.rotate(p.rotation);
+    pCtx.globalAlpha = p.opacity;
+    pCtx.fillStyle = `hsl(${345 + p.hue}, 60%, 75%)`;
+    pCtx.beginPath();
+    pCtx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
+    pCtx.fill();
+    pCtx.restore();
   }
 
   let lastPetal = 0;
   function animPetals(ts) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pCtx.clearRect(0, 0, petalCanvas.width, petalCanvas.height);
     if (ts - lastPetal > 600) { petals.push(createPetal()); lastPetal = ts; }
-    petals = petals.filter(p => p.y < canvas.height + 30);
+    petals = petals.filter(p => p.y < petalCanvas.height + 30);
     petals.forEach(p => {
       p.y += p.speedY;
       p.x += p.speedX + Math.sin(p.y * 0.02) * 0.3;
@@ -598,6 +752,88 @@
     requestAnimationFrame(animPetals);
   }
   requestAnimationFrame(animPetals);
+
+  /* ── FIREWORKS (Triggers on unlock) ── */
+  function startFireworks() {
+    const fwCanvas = document.getElementById('fireworks-canvas');
+    const fCtx = fwCanvas.getContext('2d');
+    let particles = [];
+    let fireworkTimer = 0;
+    const colors = ['#c9687a', '#8b3a48', '#c9a96e', '#ffffff']; 
+    let showFireworks = true;
+
+    setTimeout(() => {
+      showFireworks = false;
+      fwCanvas.style.opacity = '0';
+      setTimeout(() => fwCanvas.remove(), 2000);
+    }, 15000);
+
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 5 + 1;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.friction = 0.95;
+        this.gravity = 0.05;
+        this.alpha = 1;
+        this.decay = Math.random() * 0.015 + 0.01;
+      }
+      update() {
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= this.decay;
+      }
+      draw() {
+        fCtx.save();
+        fCtx.globalAlpha = this.alpha;
+        fCtx.beginPath();
+        fCtx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        fCtx.fillStyle = this.color;
+        fCtx.fill();
+        fCtx.restore();
+      }
+    }
+
+    function createExplosion(x, y) {
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      for (let i = 0; i < 60; i++) {
+        particles.push(new Particle(x, y, color));
+      }
+    }
+
+    function animFireworks() {
+      if (!document.getElementById('fireworks-canvas')) return; 
+      
+      fCtx.globalCompositeOperation = 'destination-out';
+      fCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      fCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+      fCtx.globalCompositeOperation = 'lighter';
+
+      if (showFireworks && Math.random() < 0.05) {
+        const x = Math.random() * fwCanvas.width;
+        const y = Math.random() * (fwCanvas.height * 0.5) + fwCanvas.height * 0.1; 
+        createExplosion(x, y);
+      }
+
+      particles.forEach((p, index) => {
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) particles.splice(index, 1);
+      });
+
+      requestAnimationFrame(animFireworks);
+    }
+    
+    createExplosion(fwCanvas.width / 2, fwCanvas.height / 3);
+    animFireworks();
+  }
 
   /* ── SCROLL REVEAL ── */
   const observer = new IntersectionObserver(entries => {
